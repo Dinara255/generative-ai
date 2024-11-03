@@ -1,0 +1,208 @@
+-
+
+Project Setup
+
+1. Tech Stack Selection and Project Initialization
+
+Frontend: Use React Native to support iOS and Android.
+Backend: Use Firebase for real-time database, Node.js with Express.js for any server-based functions, and Firebase Authentication for user login.
+Setup Steps:	
+Initialize your project in React Native:
+npx react-native init YourProjectName
+Set up Firebase for the backend with authentication and real-time database features.
+Use Express.js for any API setup if you have custom server functions.
+
+Feature Coding Instructions
+I. User Roles & Permissions
+1. User Authentication (Admin, Teacher, Viewer)
+Use Firebase Authentication or a custom JWT-based solution.
+Roles: Admin, Teacher, and Viewer roles must be defined in the user database. For example:
+{
+  "userID": "uniqueUserID",
+  "username": "teacherUser",
+  "role": "Teacher",
+  "profilePhotoURL": "linkToProfilePic",
+  "badges": []
+}
+Permissions: Only Admins can access exclusive resources. Use middleware or role checks in the frontend to manage access to certain features.
+
+2. Role-Based Access Control
+When rendering content, check user roles to conditionally display features. For example:
+
+if (user.role === 'Admin') {
+  // Render exclusive features
+}
+
+II. UI/UX Design & Frontend Components
+1. Navigation Bar
+Implement a bottom navigation bar with tabs for Home, Uploads, Messages, Profile, and Settings.
+Example Component:
+<BottomTabNavigator>
+  <Tab.Screen name="Home" component={HomeScreen} />
+  <Tab.Screen name="Uploads" component={UploadScreen} />
+  <Tab.Screen name="Messages" component={MessagesScreen} />
+  <Tab.Screen name="Profile" component={ProfileScreen} />
+  <Tab.Screen name="Settings" component={SettingsScreen} />
+</BottomTabNavigator>
+
+
+2. Profile Display (Facebook Style)
+
+Create a Profile screen with sections for profile photo, bio, badges, and uploaded content. Organize it into separate components (e.g., ProfilePhoto, BioSection, BadgeDisplay, ContentGrid).
+
+Example Layout:
+
+const ProfileScreen = () => (
+  <View>
+    <ProfilePhoto />
+    <BioSection />
+    <BadgeDisplay />
+    <ContentGrid uploads={userUploads} />
+  </View>
+);
+
+
+3. Instagram-Style Feed
+
+Implement a feed using a FlatList to display posts as cards. Each card includes a title, author, likes, and comments.
+
+Example Card Component:
+
+const PostCard = ({ title, author, likes, comments }) => (
+  <View style={styles.card}>
+    <Text>{title}</Text>
+    <Text>By {author}</Text>
+    <Text>Likes: {likes}</Text>
+    <Text>Comments: {comments.length}</Text>
+  </View>
+);
+
+
+4. WhatsApp-Inspired Messaging Interface
+
+Implement a messaging interface with a chat bubble style using Firebase for real-time messaging.
+
+Example Message Component:
+
+const MessageBubble = ({ message, sender }) => (
+  <View style={sender === currentUser ? styles.myMessage : styles.otherMessage}>
+    <Text>{message.text}</Text>
+    <Text>{message.timestamp}</Text>
+  </View>
+);
+
+
+5. Stories Carousel (Instagram Stories)
+
+Implement a horizontal scrollable carousel at the top of the feed. Use a ScrollView with horizontal orientation.
+
+Example Carousel:
+
+<ScrollView horizontal showsHorizontalScrollIndicator={false}>
+  {stories.map(story => (
+    <StoryThumbnail key={story.id} story={story} />
+  ))}
+</ScrollView>
+
+
+
+---
+
+III. Content Uploading System
+
+1. Upload Screen for Teachers
+
+File Upload: Use Firebase Storage to store files (e.g., PDFs, images). Allow Teachers to tag uploads by grade and subject.
+
+Form Example:
+
+<TextInput placeholder="Title" value={title} onChangeText={setTitle} />
+<TextInput placeholder="Description" value={description} onChangeText={setDescription} />
+<Button title="Upload File" onPress={uploadFile} />
+
+
+2. Admin-Exclusive Upload Section
+
+Limit access to the Admin upload section by checking the user’s role before rendering the component.
+
+
+3. Cloning Feature
+
+Add a Clone button to each content card that creates a duplicate entry in the database under a new ID.
+
+Example Cloning Function:
+
+const cloneContent = (contentId) => {
+  const originalContent = getContentById(contentId);
+  const clonedContent = { ...originalContent, id: generateNewId() };
+  saveContent(clonedContent);
+};
+
+
+
+---
+
+IV. AI-Driven Features
+
+1. Content Analysis and Suggestions
+
+Integrate AI to analyze uploaded content, suggest improvements, and generate rubrics. You may use a pre-trained model API (like OpenAI) or set up a machine learning pipeline for specific tasks.
+
+Example API Call for Content Analysis:
+
+const analyzeContent = async (content) => {
+  const response = await fetch("https://yourAIapi.com/analyze", {
+    method: "POST",
+    body: JSON.stringify({ content }),
+  });
+  return await response.json();
+};
+
+
+2. Rubric Generator
+
+Provide options for teachers to generate custom rubrics based on assignment type. Store rubric templates and allow adjustments.
+
+Example Rubric Component:
+
+const RubricGenerator = ({ assignmentType }) => (
+  <View>
+    <Text>Select criteria for {assignmentType}</Text>
+    {/* Criteria inputs */}
+  </View>
+);
+
+
+V. Gamification and Community Engagement
+
+1. Badge System
+Track user achievements and award badges. Display badges on profiles.
+Badge Logic:
+if (userUploads > 10) awardBadge(userID, "Top Contributor");
+
+2. Community Groups
+Create group messaging or discussion forums. Use Firebase or a third-party messaging SDK to support real-time group chats.
+Group Chat Component:
+<GroupChat chatId={chatId} messages={groupMessages} />
+
+VI. Analytics and Metrics Collection
+
+1. Set Up Firebase Analytics
+Track user engagement with key features, such as content uploads, messaging, and cloning.
+Example Tracking:
+
+logEvent('content_upload', { userId: userID, contentType: content.type });
+
+
+
+2. User Retention and Activity Reports
+Generate reports based on user activity data to understand usage trends and high-engagement features.
+Deployment & Scaling
+
+1. Optimize App Performance
+Use lazy loading for images and caching where possible to improve load times.
+Implement serverless functions or cloud functions for scalable backend services.
+2. App Store Submission
+Prepare for app stores by ensuring compliance with app guidelines and submitting icons, descriptions, and screenshots.
+
+
